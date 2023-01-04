@@ -20,6 +20,8 @@ namespace PessoasAPI.Controllers
             _pessoaRepositorio = new PessoaRepositorio();
         }
 
+        //{"nome": "teste", "email": "teste@gmail.com", "idade": "23", "phone": "54454654654", "number": "0"}
+
         [AllowAnonymous]
         [HttpPost("CadastrarPessoa")]
         public ActionResult CadastrarPessoa([FromBody] JObject param)
@@ -45,7 +47,7 @@ namespace PessoasAPI.Controllers
             }
             catch (Exception e)
             {
-               var retorno = new
+                var retorno = new
                 {
                     status = false,
                     msg = e.Message
