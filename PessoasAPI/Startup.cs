@@ -37,7 +37,7 @@ namespace PessoasAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PessoasAPI", Version = "v1" });
             });
 
-            services.AddDbContext<Context>(context => context.UseSqlServer(Configuration.GetConnectionString("DevConnection")));
+            services.AddDbContext<Context>(context => context.UseSqlServer(Configuration.GetConnectionString("ConnectionDBA")));
 
             services.AddScoped<IPessoasRepositorio, PessoaRepositorio>();
         }

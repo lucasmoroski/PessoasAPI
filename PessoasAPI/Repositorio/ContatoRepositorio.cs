@@ -1,55 +1,53 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using PessoasAPI.DataBase;
 using PessoasAPI.Models;
 using PessoasAPI.Repositorio.interfaces;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PessoasAPI.Repositorio
 {
-    public class PessoaRepositorio : IPessoasRepositorio
+    public class ContatoRepositorio : IContatosRepositorio
     {
         string connection = @"Data Source=DESKTOP-036I1NH\SQLEXPRESS;Initial Catalog=Pessoa_db;Integrated Security=True";
 
-        public List<Pessoa> BuscarPessoas()
+        public List<Contato> BuscarContatos(int pessoaId)
         {
-            List<Pessoa> pessoa = new List<Pessoa>();
+            List<Contato> contatos = new List<Contato>();
 
             using (SqlConnection conection = new SqlConnection(connection))
             {
                 conection.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_ListaPessoa", conection))
+                using (SqlCommand cmd = new SqlCommand("sp_ListaContatos", conection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("pessoaId", pessoaId);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader != null)
+                        if (reader != null) 
                         {
                             while (reader.Read())
                             {
-                                var p = new Pessoa();
-                                p.PessoaId = int.Parse(reader["PessoaId"].ToString());
-                                p.Name = reader["Nome"].ToString();
-                                p.Email = reader["Email"].ToString();
-                                p.Idade = int.Parse(reader["Idade"].ToString());
-                                p.Phone = long.Parse(reader["Telefone"].ToString());
-                                pessoa.Add(p);
+                                var c = new Contato();
+                                c.ContatoId = int.Parse(reader["ContatoId"].ToString());
+                                c.PessoaId = int.Parse(reader["fk_pessoaId"].ToString());
+                                c.Name = reader["Nome"].ToString();
+                                c.Email = reader["Email"].ToString();
+                                c.Idade = int.Parse(reader["Idade"].ToString());
+                                c.Phone = long.Parse(reader["Telefone"].ToString());
+                                contatos.Add(c);
                             }
                         }
                     }
                 }
             }
-            return pessoa;
+            return contatos;
         }
 
-        public Pessoa Create(Pessoa pessoa)
+        public Contato Create(Contato pessoa)
         {
-            Pessoa pessoas = new Pessoa();
+            Contato pessoas = new Contato();
 
             using (SqlConnection conection = new SqlConnection(connection))
             {
@@ -64,7 +62,7 @@ namespace PessoasAPI.Repositorio
                     cmd.Parameters.AddWithValue("phone", long.Parse(pessoa.Phone.ToString()));
                     cmd.Parameters.AddWithValue("number", long.Parse(pessoa.Number.ToString()));
 
-                   pessoas.PessoaId = cmd.ExecuteNonQuery();
+                    pessoas.PessoaId = cmd.ExecuteNonQuery();
 
                 }
 
@@ -72,17 +70,16 @@ namespace PessoasAPI.Repositorio
             return pessoas;
         }
 
-        public async Task<bool> Delet(int pessoaId)
-        {
 
-            return true;
+        public Task<bool> Delet(int pessoaId, int contatoId)
+        {
+            throw new System.NotImplementedException();
         }
 
-
-        public async Task<Pessoa> Update(Pessoa pessoa)
+        public Task<Contato> Update(Contato contato)
         {
-
-            return pessoa;
+            throw new System.NotImplementedException();
         }
+
     }
 }
