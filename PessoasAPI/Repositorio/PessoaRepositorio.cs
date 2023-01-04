@@ -54,6 +54,7 @@ namespace PessoasAPI.Repositorio
             using (SqlConnection conection = new SqlConnection(connection))
             {
                 conection.Open();
+
                 using (SqlCommand cmd = new SqlCommand("sp_InsertPessoaId", conection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
