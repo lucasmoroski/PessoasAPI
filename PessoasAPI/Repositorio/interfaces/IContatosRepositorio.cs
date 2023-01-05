@@ -7,8 +7,8 @@ namespace PessoasAPI.Repositorio.interfaces
     public interface IContatosRepositorio
     {
         List<Contato> BuscarContatos(int pessoaId);
-        Contato Create(Contato contato);
-        Task<Contato> Update(Contato contato);
-        Task<bool> Delet(int pessoaId, int contatoId);
+        long Create(Contato contato);
+        long Update(Contato contato);
+        bool Delet(int pessoaId, int contatoId);
     }
 }

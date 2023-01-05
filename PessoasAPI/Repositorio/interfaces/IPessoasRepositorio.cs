@@ -7,8 +7,8 @@ namespace PessoasAPI.Repositorio.interfaces
     public interface IPessoasRepositorio
     {
         List<Pessoa> BuscarPessoas();
-        Pessoa Create(Pessoa pessoa);
-        Task<Pessoa> Update(Pessoa pessoa);
-        Task<bool> Delet(int pessoaId);
+        long Create(Pessoa pessoa);
+        long Update(Pessoa pessoa);
+        bool Delet(int pessoaId);
     }
 }

@@ -37,7 +37,7 @@ namespace PessoasAPI.Repositorio
                                 p.Name = reader["Nome"].ToString();
                                 p.Email = reader["Email"].ToString();
                                 p.Idade = int.Parse(reader["Idade"].ToString());
-                                p.Phone = long.Parse(reader["Telefone"].ToString());
+                                p.Telefone = reader["Telefone"].ToString();
                                 pessoa.Add(p);
                             }
                         }
@@ -47,7 +47,7 @@ namespace PessoasAPI.Repositorio
             return pessoa;
         }
 
-        public Pessoa Create(Pessoa pessoa)
+        public long Create(Pessoa pessoa)
         {
             Pessoa pessoas = new Pessoa();
 
@@ -59,31 +59,64 @@ namespace PessoasAPI.Repositorio
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("nome", pessoa.Name.ToString());
-                    cmd.Parameters.AddWithValue("email", pessoa.Email.ToString());
-                    cmd.Parameters.AddWithValue("idade", int.Parse(pessoa.Idade.ToString()));
-                    cmd.Parameters.AddWithValue("phone", long.Parse(pessoa.Phone.ToString()));
-                    cmd.Parameters.AddWithValue("number", long.Parse(pessoa.Number.ToString()));
+                    cmd.Parameters.AddWithValue("@nome", pessoa.Name.ToString());
+                    cmd.Parameters.AddWithValue("@email", pessoa.Email.ToString());
+                    cmd.Parameters.AddWithValue("@idade", int.Parse(pessoa.Idade.ToString()));
+                    cmd.Parameters.AddWithValue("@telefone", pessoa.Telefone.ToString());
 
-                   pessoas.PessoaId = cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
 
+                    return 1;
                 }
 
             }
-            return pessoas;
+
         }
 
-        public async Task<bool> Delet(int pessoaId)
+        public bool Delet(int pessoaId)
         {
+            using (SqlConnection conection = new SqlConnection(connection))
+            {
+                conection.Open();
 
-            return true;
+                using (SqlCommand cmd = new SqlCommand("sp_DeletPessoaId", conection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@pessoaId", pessoaId);
+
+                    cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+
+            }
         }
 
 
-        public async Task<Pessoa> Update(Pessoa pessoa)
+        public long Update(Pessoa pessoa)
         {
 
-            return pessoa;
+            using (SqlConnection conection = new SqlConnection(connection))
+            {
+                conection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("sp_UpdatePessoaId", conection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@pessoaId", int.Parse(pessoa.PessoaId.ToString()));
+                    cmd.Parameters.AddWithValue("@nome", pessoa.Name.ToString());
+                    cmd.Parameters.AddWithValue("@email", pessoa.Email.ToString());
+                    cmd.Parameters.AddWithValue("@idade", int.Parse(pessoa.Idade.ToString()));
+                    cmd.Parameters.AddWithValue("@telefone", pessoa.Telefone.ToString());
+
+                    cmd.ExecuteNonQuery();
+
+                    return 1;
+                }
+
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace PessoasAPI.Repositorio
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader != null) 
+                        if (reader != null)
                         {
                             while (reader.Read())
                             {
@@ -35,7 +35,7 @@ namespace PessoasAPI.Repositorio
                                 c.Name = reader["Nome"].ToString();
                                 c.Email = reader["Email"].ToString();
                                 c.Idade = int.Parse(reader["Idade"].ToString());
-                                c.Phone = long.Parse(reader["Telefone"].ToString());
+                                c.Telefone = reader["Telefone"].ToString();
                                 contatos.Add(c);
                             }
                         }
@@ -45,40 +45,76 @@ namespace PessoasAPI.Repositorio
             return contatos;
         }
 
-        public Contato Create(Contato pessoa)
+        public long Create(Contato contato)
         {
             Contato pessoas = new Contato();
 
             using (SqlConnection conection = new SqlConnection(connection))
             {
                 conection.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_InsertPessoaId", conection))
+                using (SqlCommand cmd = new SqlCommand("sp_InsertContato", conection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("nome", pessoa.Name.ToString());
-                    cmd.Parameters.AddWithValue("email", pessoa.Email.ToString());
-                    cmd.Parameters.AddWithValue("idade", int.Parse(pessoa.Idade.ToString()));
-                    cmd.Parameters.AddWithValue("phone", long.Parse(pessoa.Phone.ToString()));
-                    cmd.Parameters.AddWithValue("number", long.Parse(pessoa.Number.ToString()));
+                    cmd.Parameters.AddWithValue("@pessoaId", contato.PessoaId.ToString());
+                    cmd.Parameters.AddWithValue("@nome", contato.Name.ToString());
+                    cmd.Parameters.AddWithValue("@email", contato.Email.ToString());
+                    cmd.Parameters.AddWithValue("@idade", int.Parse(contato.Idade.ToString()));
+                    cmd.Parameters.AddWithValue("@telefone", contato.Telefone.ToString());
 
-                    pessoas.PessoaId = cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
 
+                    return 1;
                 }
 
             }
-            return pessoas;
         }
 
 
-        public Task<bool> Delet(int pessoaId, int contatoId)
+        public bool Delet(int pessoaId, int contatoId)
         {
-            throw new System.NotImplementedException();
+            using (SqlConnection conection = new SqlConnection(connection))
+            {
+                conection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("sp_DeleteContato", conection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@pessoaId", pessoaId);
+                    cmd.Parameters.AddWithValue("@contatoId", contatoId);
+
+                    cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+
+            }
         }
 
-        public Task<Contato> Update(Contato contato)
+        public long Update(Contato contato)
         {
-            throw new System.NotImplementedException();
+            using (SqlConnection conection = new SqlConnection(connection))
+            {
+                conection.Open();
+
+                using (SqlCommand cmd = new SqlCommand("sp_UpdateContato", conection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@contatoId", contato.ContatoId.ToString());
+                    cmd.Parameters.AddWithValue("@pessoaId", contato.PessoaId.ToString());
+                    cmd.Parameters.AddWithValue("@nome", contato.Name.ToString());
+                    cmd.Parameters.AddWithValue("@email", contato.Email.ToString());
+                    cmd.Parameters.AddWithValue("@idade", int.Parse(contato.Idade.ToString()));
+                    cmd.Parameters.AddWithValue("@telefone", contato.Telefone.ToString());
+
+                    cmd.ExecuteNonQuery();
+
+                    return 1;
+                }
+
+            }
         }
 
     }

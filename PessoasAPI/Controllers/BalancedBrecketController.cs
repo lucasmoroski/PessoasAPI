@@ -49,8 +49,6 @@ namespace PessoasAPI.Controllers
             }
         }
 
-        // Returns true if character1 and character2
-        // are matching left and right brackets */
         static Boolean isMatchingPair(char character1,
                                       char character2)
         {
@@ -64,41 +62,25 @@ namespace PessoasAPI.Controllers
                 return false;
         }
 
-        // Return true if expression has balanced
-        // Brackets
         static Boolean areBracketsBalanced(char[] exp)
         {
-            // Declare an empty character stack */
             Stack<char> st = new Stack<char>();
 
-            // Traverse the given expression to
-            //   check matching brackets
             for (int i = 0; i < exp.Length; i++)
             {
-                // If the exp[i] is a starting
-                // bracket then push it
                 if (exp[i] == '{' || exp[i] == '('
                     || exp[i] == '[')
                     st.Push(exp[i]);
 
-                //  If exp[i] is an ending bracket
-                //  then pop from stack and check if the
-                //   popped bracket is a matching pair
                 if (exp[i] == '}' || exp[i] == ')'
                     || exp[i] == ']')
                 {
 
-                    // If we see an ending bracket without
-                    //   a pair then return false
                     if (st.Count == 0)
                     {
                         return false;
                     }
 
-                    // Pop the top element from stack, if
-                    // it is not a pair brackets of
-                    // character then there is a mismatch. This
-                    // happens for expressions like {(})
                     else if (!isMatchingPair(st.Pop(),
                                              exp[i]))
                     {
@@ -107,30 +89,24 @@ namespace PessoasAPI.Controllers
                 }
             }
 
-            // If there is something left in expression
-            // then there is a starting bracket without
-            // a closing bracket
-
             if (st.Count == 0)
-                return true; // balanced
+                return true;
             else
             {
-                // not balanced
+
                 return false;
             }
         }
 
-        // Driver code
-        [HttpPost("StartBrecked")]
-        public Task<String> GetStartBrecked(String[] args)
+        [HttpGet("StartBrecked")]
+        public ActionResult<string> GetStartBrecked()
         {
-            char[] exp = { '{', '(', ')', '}', '[', ']' };
+            char[] exp = { '}', '(', ')', '}', '[', ']' };
 
-            // Function call
             if (areBracketsBalanced(exp))
-             return Task.FromResult("Balanced");
+                return "Válido";
             else
-                return Task.FromResult("Not Balanced ");
+                return "Não Válido";
         }
     }
 }
