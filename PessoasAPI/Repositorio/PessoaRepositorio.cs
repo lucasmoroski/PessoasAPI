@@ -15,6 +15,13 @@ namespace PessoasAPI.Repositorio
     {
         string connection = @"Data Source=DESKTOP-036I1NH\SQLEXPRESS;Initial Catalog=Pessoa_db;Integrated Security=True";
 
+        public readonly Context _context;
+
+        public PessoaRepositorio()
+        {
+            _context = new Context();
+        }
+
         public List<Pessoa> BuscarPessoas()
         {
             List<Pessoa> pessoa = new List<Pessoa>();
@@ -50,26 +57,16 @@ namespace PessoasAPI.Repositorio
         public long Create(Pessoa pessoa)
         {
             Pessoa pessoas = new Pessoa();
+            SqlCommand cmd = _context.ExecuteStoredProcedure("sp_InsertPessoaId");
 
-            using (SqlConnection conection = new SqlConnection(connection))
-            {
-                conection.Open();
+            cmd.Parameters.AddWithValue("@nome", pessoa.Name.ToString());
+            cmd.Parameters.AddWithValue("@email", pessoa.Email.ToString());
+            cmd.Parameters.AddWithValue("@idade", int.Parse(pessoa.Idade.ToString()));
+            cmd.Parameters.AddWithValue("@telefone", pessoa.Telefone.ToString());
 
-                using (SqlCommand cmd = new SqlCommand("sp_InsertPessoaId", conection))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
+            cmd.ExecuteNonQuery();
 
-                    cmd.Parameters.AddWithValue("@nome", pessoa.Name.ToString());
-                    cmd.Parameters.AddWithValue("@email", pessoa.Email.ToString());
-                    cmd.Parameters.AddWithValue("@idade", int.Parse(pessoa.Idade.ToString()));
-                    cmd.Parameters.AddWithValue("@telefone", pessoa.Telefone.ToString());
-
-                    cmd.ExecuteNonQuery();
-
-                    return 1;
-                }
-
-            }
+            return 1;
 
         }
 

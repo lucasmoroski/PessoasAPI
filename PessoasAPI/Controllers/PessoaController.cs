@@ -30,7 +30,7 @@ namespace PessoasAPI.Controllers
                 pessoas.Name = param["nome"].ToString();
                 pessoas.Email = param["email"].ToString();
                 pessoas.Idade = int.Parse(param["idade"].ToString());
-                pessoas.Telefone = param["phone"].ToString();
+                pessoas.Telefone = param["telefone"].ToString();
 
                 _pessoaRepositorio.Create(pessoas);
 
